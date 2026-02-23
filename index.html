@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BTC相互計算機</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0d0f14;
+            --card: #161a24;
+            --border: #2a3045;
+            --accent: #f7931a;
+            --accent2: #ffb347;
+            --text: #e8eaf0;
+            --muted: #6b7280;
+            --green: #22c55e;
+            --input-bg: #1e2433;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-image: radial-gradient(ellipse at 20% 20%, rgba(247,147,26,0.06) 0%, transparent 60%),
+                              radial-gradient(ellipse at 80% 80%, rgba(34,197,94,0.04) 0%, transparent 60%);
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.8rem;
+        }
+
+        .title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btc-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #000;
+            flex-shrink: 0;
+        }
+
+        h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        /* Price ticker */
+        .price-ticker {
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .ticker-left {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .ticker-label {
+            font-size: 0.7rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .ticker-price {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.3rem;
+            color: var(--accent);
+            font-weight: 400;
+        }
+
+        .ticker-price.loading {
+            color: var(--muted);
+            font-size: 0.9rem;
+            animation: pulse 1.2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .ticker-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }
+
+        .ticker-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.7rem;
+            color: var(--muted);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--muted);
+        }
+
+        .status-dot.live {
+            background: var(--green);
+            box-shadow: 0 0 6px var(--green);
+            animation: blink 2s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .refresh-btn {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--muted);
+            cursor: pointer;
+            padding: 4px 8px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+
+        .refresh-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .refresh-btn.spinning svg {
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Apply price button */
+        .apply-btn {
+            background: rgba(247,147,26,0.12);
+            border: 1px solid rgba(247,147,26,0.3);
+            border-radius: 6px;
+            color: var(--accent);
+            cursor: pointer;
+            padding: 4px 10px;
+            font-size: 0.72rem;
+            font-family: 'Noto Sans JP', sans-serif;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .apply-btn:hover {
+            background: rgba(247,147,26,0.2);
+        }
+
+        /* Input groups */
+        .input-group {
+            margin-bottom: 1.1rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 11px 14px;
+            background: var(--input-bg);
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1rem;
+            font-family: 'Share Tech Mono', monospace;
+            outline: none;
+            transition: border-color 0.2s;
+            -moz-appearance: textfield;
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(247,147,26,0.1);
+        }
+
+        input[type="number"]::placeholder {
+            color: #3a4055;
+        }
+
+        .input-unit {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.75rem;
+            color: var(--muted);
+            pointer-events: none;
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0.3rem 0 0.8rem;
+            color: var(--border);
+            font-size: 0.7rem;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* Buttons */
+        .btn-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 1rem;
+        }
+
+        .reset-btn {
+            flex: 1;
+            background: transparent;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            color: var(--muted);
+            padding: 10px;
+            cursor: pointer;
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .reset-btn:hover {
+            border-color: var(--text);
+            color: var(--text);
+        }
+
+        /* Info */
+        .info {
+            font-size: 0.72rem;
+            color: var(--muted);
+            margin-top: 1rem;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .error-msg {
+            font-size: 0.72rem;
+            color: #f87171;
+            margin-top: 6px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="header">
+        <div class="title">
+            <div class="btc-icon">₿</div>
+            <h2>BTC 相互計算機</h2>
+        </div>
+    </div>
+
+    <!-- Live Price Ticker -->
+    <div class="price-ticker">
+        <div class="ticker-left">
+            <span class="ticker-label">CoinGecko BTC/JPY</span>
+            <span class="ticker-price loading" id="livePrice">取得中...</span>
+        </div>
+        <div class="ticker-right">
+            <div class="ticker-status">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">接続中</span>
+            </div>
+            <div style="display:flex; gap:6px; align-items:center; margin-top:4px;">
+                <button class="apply-btn" id="applyBtn" onclick="applyLivePrice()" style="display:none;">価格を適用</button>
+                <button class="refresh-btn" id="refreshBtn" onclick="fetchPrice()">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                    </svg>
+                    更新
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="error-msg" id="errorMsg">⚠ 価格の取得に失敗しました。手動で入力してください。</div>
+
+    <div class="input-group">
+        <label>① 1BTC の価格（円）</label>
+        <div class="input-wrap">
+            <input type="number" id="price" placeholder="例: 10000000" oninput="calculate('price')">
+            <span class="input-unit">JPY</span>
+        </div>
+    </div>
+
+    <div class="divider">×</div>
+
+    <div class="input-group">
+        <label>② 保有量（BTC）</label>
+        <div class="input-wrap">
+            <input type="number" id="amount" step="0.00000001" placeholder="例: 0.5" oninput="calculate('amount')">
+            <span class="input-unit">BTC</span>
+        </div>
+    </div>
+
+    <div class="divider">=</div>
+
+    <div class="input-group">
+        <label>③ 現在の評価額（円）</label>
+        <div class="input-wrap">
+            <input type="number" id="total" placeholder="例: 5000000" oninput="calculate('total')">
+            <span class="input-unit">JPY</span>
+        </div>
+    </div>
+
+    <div class="btn-row">
+        <button class="reset-btn" onclick="resetAll()">クリア</button>
+    </div>
+
+    <div class="info">
+        2つの欄を入力すると残りを自動計算します<br>
+        価格はCoinGecko APIからリアルタイム取得
+    </div>
+</div>
+
+<script>
+    let livePriceValue = null;
+
+    // CoinGecko Public API でBTC/JPY価格を取得（CORS対応）
+    async function fetchPrice() {
+        const btn = document.getElementById('refreshBtn');
+        const priceEl = document.getElementById('livePrice');
+        const dot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const errorMsg = document.getElementById('errorMsg');
+        const applyBtn = document.getElementById('applyBtn');
+
+        btn.classList.add('spinning');
+        priceEl.classList.add('loading');
+        priceEl.textContent = '取得中...';
+        dot.classList.remove('live');
+        statusText.textContent = '接続中';
+        errorMsg.style.display = 'none';
+
+        try {
+            const url = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=jpy';
+            const res = await fetch(url, { cache: 'no-store' });
+            if (!res.ok) throw new Error('HTTP error');
+            const data = await res.json();
+            const price = data?.bitcoin?.jpy;
+            if (price && price > 0) {
+                livePriceValue = price;
+                priceEl.textContent = '¥ ' + price.toLocaleString('ja-JP');
+                priceEl.classList.remove('loading');
+                dot.classList.add('live');
+                statusText.textContent = '取得成功';
+                applyBtn.style.display = 'block';
+            } else {
+                throw new Error('Invalid data');
+            }
+        } catch (e) {
+            priceEl.textContent = '取得失敗';
+            priceEl.classList.remove('loading');
+            statusText.textContent = 'エラー';
+            errorMsg.style.display = 'block';
+        }
+
+        btn.classList.remove('spinning');
+    }
+
+    // ライブ価格を①の入力欄に適用
+    function applyLivePrice() {
+        if (livePriceValue) {
+            const priceInput = document.getElementById('price');
+            priceInput.value = livePriceValue;
+            calculate('price');
+            // 入力欄を一瞬ハイライト
+            priceInput.style.borderColor = 'var(--accent)';
+            priceInput.style.boxShadow = '0 0 0 3px rgba(247,147,26,0.2)';
+            setTimeout(() => {
+                priceInput.style.borderColor = '';
+                priceInput.style.boxShadow = '';
+            }, 800);
+        }
+    }
+
+    function calculate(currentId) {
+        const p = document.getElementById('price');
+        const a = document.getElementById('amount');
+        const t = document.getElementById('total');
+
+        const valP = parseFloat(p.value);
+        const valA = parseFloat(a.value);
+        const valT = parseFloat(t.value);
+
+        if (currentId === 'price' || currentId === 'amount') {
+            if (valP && valA) {
+                t.value = Math.floor(valP * valA);
+            }
+        }
+
+        if (currentId === 'total') {
+            if (valT && valP) {
+                a.value = (valT / valP).toFixed(8).replace(/\.?0+$/, "");
+            } else if (valT && valA) {
+                p.value = Math.floor(valT / valA);
+            }
+        }
+
+        if (currentId === 'amount' && valA && valT && !valP) {
+            p.value = Math.floor(valT / valA);
+        }
+    }
+
+    function resetAll() {
+        ['price', 'amount', 'total'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
+    }
+
+    // 起動時に自動取得
+    fetchPrice();
+    // 60秒ごとに自動更新
+    setInterval(fetchPrice, 60000);
+</script>
+
+</body>
+</html>
