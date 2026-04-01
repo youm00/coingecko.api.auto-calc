@@ -43,7 +43,6 @@
             box-shadow: 0 20px 60px rgba(0,0,0,0.5);
         }
 
-        /* Header */
         .header {
             display: flex;
             align-items: center;
@@ -71,13 +70,8 @@
             flex-shrink: 0;
         }
 
-        h2 {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--text);
-        }
+        h2 { font-size: 1.1rem; font-weight: 700; color: var(--text); }
 
-        /* Price ticker */
         .price-ticker {
             background: var(--input-bg);
             border: 1px solid var(--border);
@@ -89,25 +83,9 @@
             justify-content: space-between;
         }
 
-        .ticker-left {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .ticker-label {
-            font-size: 0.7rem;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-        }
-
-        .ticker-price {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 1.3rem;
-            color: var(--accent);
-            font-weight: 400;
-        }
+        .ticker-left { display: flex; flex-direction: column; gap: 2px; }
+        .ticker-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+        .ticker-price { font-family: 'Share Tech Mono', monospace; font-size: 1.3rem; color: var(--accent); font-weight: 400; }
 
         .ticker-price.loading {
             color: var(--muted);
@@ -115,43 +93,14 @@
             animation: pulse 1.2s ease-in-out infinite;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-        .ticker-right {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 4px;
-        }
+        .ticker-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+        .ticker-status { display: flex; align-items: center; gap: 5px; font-size: 0.7rem; color: var(--muted); }
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); }
+        .status-dot.live { background: var(--green); box-shadow: 0 0 6px var(--green); animation: blink 2s ease-in-out infinite; }
 
-        .ticker-status {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 0.7rem;
-            color: var(--muted);
-        }
-
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--muted);
-        }
-
-        .status-dot.live {
-            background: var(--green);
-            box-shadow: 0 0 6px var(--green);
-            animation: blink 2s ease-in-out infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
         .refresh-btn {
             background: none;
@@ -167,21 +116,10 @@
             transition: all 0.2s;
         }
 
-        .refresh-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
+        .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .refresh-btn.spinning svg { animation: spin 0.8s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        .refresh-btn.spinning svg {
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        /* Apply price button */
         .apply-btn {
             background: rgba(247,147,26,0.12);
             border: 1px solid rgba(247,147,26,0.3);
@@ -195,31 +133,16 @@
             white-space: nowrap;
         }
 
-        .apply-btn:hover {
-            background: rgba(247,147,26,0.2);
-        }
+        .apply-btn:hover { background: rgba(247,147,26,0.2); }
 
-        /* Input groups */
-        .input-group {
-            margin-bottom: 1.1rem;
-        }
+        .input-group { margin-bottom: 1.1rem; }
+        label { display: block; font-size: 0.78rem; color: var(--muted); margin-bottom: 0.5rem; font-weight: 700; letter-spacing: 0.03em; }
+        .input-wrap { position: relative; }
 
-        label {
-            display: block;
-            font-size: 0.78rem;
-            color: var(--muted);
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-            letter-spacing: 0.03em;
-        }
-
-        .input-wrap {
-            position: relative;
-        }
-
-        input[type="number"] {
+        /* type="text"に変更し、数値を右寄せに */
+        input[type="text"] {
             width: 100%;
-            padding: 11px 14px;
+            padding: 11px 45px 11px 14px; /* 右側の単位スペースを確保 */
             background: var(--input-bg);
             border: 1.5px solid var(--border);
             border-radius: 8px;
@@ -228,22 +151,15 @@
             font-family: 'Share Tech Mono', monospace;
             outline: none;
             transition: border-color 0.2s;
-            -moz-appearance: textfield;
+            text-align: right;
         }
 
-        input[type="number"]::-webkit-outer-spin-button,
-        input[type="number"]::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-        }
-
-        input[type="number"]:focus {
+        input[type="text"]:focus {
             border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(247,147,26,0.1);
         }
 
-        input[type="number"]::placeholder {
-            color: #3a4055;
-        }
+        input[type="text"]::placeholder { color: #3a4055; }
 
         .input-unit {
             position: absolute;
@@ -255,30 +171,10 @@
             pointer-events: none;
         }
 
-        /* Divider */
-        .divider {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 0.3rem 0 0.8rem;
-            color: var(--border);
-            font-size: 0.7rem;
-        }
+        .divider { display: flex; align-items: center; gap: 10px; margin: 0.3rem 0 0.8rem; color: var(--border); font-size: 0.7rem; }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-        .divider::before, .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
-
-        /* Buttons */
-        .btn-row {
-            display: flex;
-            gap: 8px;
-            margin-top: 1rem;
-        }
-
+        .btn-row { display: flex; gap: 8px; margin-top: 1rem; }
         .reset-btn {
             flex: 1;
             background: transparent;
@@ -291,27 +187,10 @@
             font-size: 0.85rem;
             transition: all 0.2s;
         }
+        .reset-btn:hover { border-color: var(--text); color: var(--text); }
 
-        .reset-btn:hover {
-            border-color: var(--text);
-            color: var(--text);
-        }
-
-        /* Info */
-        .info {
-            font-size: 0.72rem;
-            color: var(--muted);
-            margin-top: 1rem;
-            line-height: 1.6;
-            text-align: center;
-        }
-
-        .error-msg {
-            font-size: 0.72rem;
-            color: #f87171;
-            margin-top: 6px;
-            display: none;
-        }
+        .info { font-size: 0.72rem; color: var(--muted); margin-top: 1rem; line-height: 1.6; text-align: center; }
+        .error-msg { font-size: 0.72rem; color: #f87171; margin-top: 6px; display: none; }
     </style>
 </head>
 <body>
@@ -324,7 +203,6 @@
         </div>
     </div>
 
-    <!-- Live Price Ticker -->
     <div class="price-ticker">
         <div class="ticker-left">
             <span class="ticker-label">CoinGecko BTC/JPY</span>
@@ -353,7 +231,7 @@
     <div class="input-group">
         <label>① 1BTC の価格（円）</label>
         <div class="input-wrap">
-            <input type="number" id="price" placeholder="例: 10000000" oninput="calculate('price')">
+            <input type="text" id="price" placeholder="例: 10,000,000" oninput="handleInput('price')">
             <span class="input-unit">JPY</span>
         </div>
     </div>
@@ -363,7 +241,7 @@
     <div class="input-group">
         <label>② 保有量（BTC）</label>
         <div class="input-wrap">
-            <input type="number" id="amount" step="0.00000001" placeholder="例: 0.5" oninput="calculate('amount')">
+            <input type="text" id="amount" placeholder="例: 0.5" oninput="handleInput('amount')">
             <span class="input-unit">BTC</span>
         </div>
     </div>
@@ -373,7 +251,7 @@
     <div class="input-group">
         <label>③ 現在の評価額（円）</label>
         <div class="input-wrap">
-            <input type="number" id="total" placeholder="例: 5000000" oninput="calculate('total')">
+            <input type="text" id="total" placeholder="例: 5,000,000" oninput="handleInput('total')">
             <span class="input-unit">JPY</span>
         </div>
     </div>
@@ -384,14 +262,31 @@
 
     <div class="info">
         2つの欄を入力すると残りを自動計算します<br>
-        価格はCoinGecko APIからリアルタイム取得
+        数値には自動でカンマが挿入されます
     </div>
 </div>
 
 <script>
     let livePriceValue = null;
 
-    // CoinGecko Public API でBTC/JPY価格を取得（CORS対応）
+    // 数値をパース（カンマを除去）
+    function parseNum(val) {
+        const str = String(val).replace(/,/g, '');
+        const num = parseFloat(str);
+        return isNaN(num) ? 0 : num;
+    }
+
+    // 数値をフォーマット（JPYは整数カンマ、BTCは小数点8桁まで）
+    function formatNum(val, id) {
+        if (!val && val !== 0) return "";
+        if (id === 'amount') {
+            // BTC保有量は小数点最大8桁、末尾の0は削除
+            return Number(val).toLocaleString('ja-JP', { maximumFractionDigits: 8 });
+        }
+        // 円単位は整数
+        return Math.floor(val).toLocaleString('ja-JP');
+    }
+
     async function fetchPrice() {
         const btn = document.getElementById('refreshBtn');
         const priceEl = document.getElementById('livePrice');
@@ -429,24 +324,38 @@
             statusText.textContent = 'エラー';
             errorMsg.style.display = 'block';
         }
-
         btn.classList.remove('spinning');
     }
 
-    // ライブ価格を①の入力欄に適用
     function applyLivePrice() {
         if (livePriceValue) {
             const priceInput = document.getElementById('price');
-            priceInput.value = livePriceValue;
+            priceInput.value = formatNum(livePriceValue, 'price');
             calculate('price');
-            // 入力欄を一瞬ハイライト
             priceInput.style.borderColor = 'var(--accent)';
-            priceInput.style.boxShadow = '0 0 0 3px rgba(247,147,26,0.2)';
-            setTimeout(() => {
-                priceInput.style.borderColor = '';
-                priceInput.style.boxShadow = '';
-            }, 800);
+            setTimeout(() => { priceInput.style.borderColor = ''; }, 800);
         }
+    }
+
+    // 入力イベントの制御
+    function handleInput(id) {
+        const el = document.getElementById(id);
+        let raw = el.value.replace(/,/g, '');
+        
+        // 数値以外（カンマ以外）を除去
+        if (id === 'amount') {
+            raw = raw.replace(/[^0-9.]/g, '');
+        } else {
+            raw = raw.replace(/[^0-9]/g, '');
+        }
+
+        if (raw !== "") {
+            // 表示を更新（入力中のピリオドを消さないよう配慮）
+            if (!(id === 'amount' && raw.endsWith('.'))) {
+                el.value = formatNum(raw, id);
+            }
+        }
+        calculate(id);
     }
 
     function calculate(currentId) {
@@ -454,26 +363,26 @@
         const a = document.getElementById('amount');
         const t = document.getElementById('total');
 
-        const valP = parseFloat(p.value);
-        const valA = parseFloat(a.value);
-        const valT = parseFloat(t.value);
+        const valP = parseNum(p.value);
+        const valA = parseNum(a.value);
+        const valT = parseNum(t.value);
 
         if (currentId === 'price' || currentId === 'amount') {
             if (valP && valA) {
-                t.value = Math.floor(valP * valA);
+                t.value = formatNum(valP * valA, 'total');
             }
         }
 
         if (currentId === 'total') {
             if (valT && valP) {
-                a.value = (valT / valP).toFixed(8).replace(/\.?0+$/, "");
+                a.value = formatNum(valT / valP, 'amount');
             } else if (valT && valA) {
-                p.value = Math.floor(valT / valA);
+                p.value = formatNum(valT / valA, 'price');
             }
         }
 
         if (currentId === 'amount' && valA && valT && !valP) {
-            p.value = Math.floor(valT / valA);
+            p.value = formatNum(valT / valA, 'price');
         }
     }
 
@@ -483,9 +392,7 @@
         });
     }
 
-    // 起動時に自動取得
     fetchPrice();
-    // 60秒ごとに自動更新
     setInterval(fetchPrice, 60000);
 </script>
 
