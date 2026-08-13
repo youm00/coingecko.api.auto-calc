@@ -1,21 +1,47 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BTC相互計算機</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #0d0f14;
-            --card: #161a24;
-            --border: #2a3045;
-            --accent: #f7931a;
-            --accent2: #ffb347;
-            --text: #e8eaf0;
-            --muted: #6b7280;
-            --green: #22c55e;
+        /* ── テーマ変数 ── */
+        [data-theme="dark"] {
+            --bg:       #0d0f14;
+            --card:     #161a24;
+            --border:   #2a3045;
+            --text:     #e8eaf0;
+            --muted:    #6b7280;
             --input-bg: #1e2433;
+            --bg-grad1: rgba(247,147,26,0.06);
+            --bg-grad2: rgba(34,197,94,0.04);
+            --shadow:   rgba(0,0,0,0.5);
+            --placeholder: #3a4055;
+            --btn-border: #2a3045;
+            --btn-text:   #6b7280;
+        }
+
+        [data-theme="light"] {
+            --bg:       #f0f4fa;
+            --card:     #ffffff;
+            --border:   #dde3f0;
+            --text:     #1a1e2e;
+            --muted:    #7a849e;
+            --input-bg: #f5f7fc;
+            --bg-grad1: rgba(247,147,26,0.05);
+            --bg-grad2: rgba(34,197,94,0.03);
+            --shadow:   rgba(0,0,0,0.1);
+            --placeholder: #b0bace;
+            --btn-border: #dde3f0;
+            --btn-text:   #7a849e;
+        }
+
+        /* ── 共通変数（テーマ非依存） ── */
+        :root {
+            --accent:  #f7931a;
+            --accent2: #ffb347;
+            --green:   #22c55e;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -29,8 +55,10 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
-            background-image: radial-gradient(ellipse at 20% 20%, rgba(247,147,26,0.06) 0%, transparent 60%),
-                              radial-gradient(ellipse at 80% 80%, rgba(34,197,94,0.04) 0%, transparent 60%);
+            background-image:
+                radial-gradient(ellipse at 20% 20%, var(--bg-grad1) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 80%, var(--bg-grad2) 0%, transparent 60%);
+            transition: background 0.25s, color 0.25s;
         }
 
         .card {
@@ -40,9 +68,11 @@
             padding: 2rem;
             width: 100%;
             max-width: 420px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            box-shadow: 0 20px 60px var(--shadow);
+            transition: background 0.25s, border-color 0.25s, box-shadow 0.25s;
         }
 
+        /* ── ヘッダー ── */
         .header {
             display: flex;
             align-items: center;
@@ -70,8 +100,28 @@
             flex-shrink: 0;
         }
 
-        h2 { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+        h2 { font-size: 1.1rem; font-weight: 700; }
 
+        /* ── テーマ切替ボタン ── */
+        #theme-btn {
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            color: var(--muted);
+            padding: 0.3rem 0.8rem;
+            font-size: 0.75rem;
+            font-family: 'Noto Sans JP', sans-serif;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: background 0.2s, border-color 0.2s, color 0.2s;
+            white-space: nowrap;
+        }
+
+        #theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* ── ティッカー ── */
         .price-ticker {
             background: var(--input-bg);
             border: 1px solid var(--border);
@@ -81,11 +131,12 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            transition: background 0.25s, border-color 0.25s;
         }
 
         .ticker-left { display: flex; flex-direction: column; gap: 2px; }
         .ticker-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
-        .ticker-price { font-family: 'Share Tech Mono', monospace; font-size: 1.3rem; color: var(--accent); font-weight: 400; }
+        .ticker-price { font-family: 'Share Tech Mono', monospace; font-size: 1.3rem; color: var(--accent); }
 
         .ticker-price.loading {
             color: var(--muted);
@@ -135,14 +186,14 @@
 
         .apply-btn:hover { background: rgba(247,147,26,0.2); }
 
+        /* ── 入力 ── */
         .input-group { margin-bottom: 1.1rem; }
         label { display: block; font-size: 0.78rem; color: var(--muted); margin-bottom: 0.5rem; font-weight: 700; letter-spacing: 0.03em; }
         .input-wrap { position: relative; }
 
-        /* type="text"に変更し、数値を右寄せに */
         input[type="text"] {
             width: 100%;
-            padding: 11px 45px 11px 14px; /* 右側の単位スペースを確保 */
+            padding: 11px 45px 11px 14px;
             background: var(--input-bg);
             border: 1.5px solid var(--border);
             border-radius: 8px;
@@ -150,7 +201,7 @@
             font-size: 1rem;
             font-family: 'Share Tech Mono', monospace;
             outline: none;
-            transition: border-color 0.2s;
+            transition: border-color 0.2s, background 0.25s, color 0.25s;
             text-align: right;
         }
 
@@ -159,7 +210,7 @@
             box-shadow: 0 0 0 3px rgba(247,147,26,0.1);
         }
 
-        input[type="text"]::placeholder { color: #3a4055; }
+        input[type="text"]::placeholder { color: var(--placeholder); }
 
         .input-unit {
             position: absolute;
@@ -178,9 +229,9 @@
         .reset-btn {
             flex: 1;
             background: transparent;
-            border: 1.5px solid var(--border);
+            border: 1.5px solid var(--btn-border);
             border-radius: 8px;
-            color: var(--muted);
+            color: var(--btn-text);
             padding: 10px;
             cursor: pointer;
             font-family: 'Noto Sans JP', sans-serif;
@@ -201,6 +252,10 @@
             <div class="btc-icon">₿</div>
             <h2>BTC 相互計算機</h2>
         </div>
+        <button id="theme-btn" onclick="toggleTheme()">
+            <span id="theme-icon">☀️</span>
+            <span id="theme-label">ライトモード</span>
+        </button>
     </div>
 
     <div class="price-ticker">
@@ -267,33 +322,48 @@
 </div>
 
 <script>
+    // ── テーマ ──────────────────────────────────
+    const STORAGE_KEY = 'btc-calc-theme';
+
+    function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        const isDark = theme === 'dark';
+        document.getElementById('theme-icon').textContent  = isDark ? '☀️' : '🌙';
+        document.getElementById('theme-label').textContent = isDark ? 'ライトモード' : 'ダークモード';
+        localStorage.setItem(STORAGE_KEY, theme);
+    }
+
+    function toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme');
+        applyTheme(current === 'dark' ? 'light' : 'dark');
+    }
+
+    applyTheme(localStorage.getItem(STORAGE_KEY) || 'dark');
+
+    // ── 価格取得 ────────────────────────────────
     let livePriceValue = null;
 
-    // 数値をパース（カンマを除去）
     function parseNum(val) {
         const str = String(val).replace(/,/g, '');
         const num = parseFloat(str);
         return isNaN(num) ? 0 : num;
     }
 
-    // 数値をフォーマット（JPYは整数カンマ、BTCは小数点8桁まで）
     function formatNum(val, id) {
         if (!val && val !== 0) return "";
         if (id === 'amount') {
-            // BTC保有量は小数点最大8桁、末尾の0は削除
             return Number(val).toLocaleString('ja-JP', { maximumFractionDigits: 8 });
         }
-        // 円単位は整数
         return Math.floor(val).toLocaleString('ja-JP');
     }
 
     async function fetchPrice() {
-        const btn = document.getElementById('refreshBtn');
-        const priceEl = document.getElementById('livePrice');
-        const dot = document.getElementById('statusDot');
+        const btn        = document.getElementById('refreshBtn');
+        const priceEl    = document.getElementById('livePrice');
+        const dot        = document.getElementById('statusDot');
         const statusText = document.getElementById('statusText');
-        const errorMsg = document.getElementById('errorMsg');
-        const applyBtn = document.getElementById('applyBtn');
+        const errorMsg   = document.getElementById('errorMsg');
+        const applyBtn   = document.getElementById('applyBtn');
 
         btn.classList.add('spinning');
         priceEl.classList.add('loading');
@@ -337,20 +407,15 @@
         }
     }
 
-    // 入力イベントの制御
     function handleInput(id) {
         const el = document.getElementById(id);
         let raw = el.value.replace(/,/g, '');
-        
-        // 数値以外（カンマ以外）を除去
         if (id === 'amount') {
             raw = raw.replace(/[^0-9.]/g, '');
         } else {
             raw = raw.replace(/[^0-9]/g, '');
         }
-
         if (raw !== "") {
-            // 表示を更新（入力中のピリオドを消さないよう配慮）
             if (!(id === 'amount' && raw.endsWith('.'))) {
                 el.value = formatNum(raw, id);
             }
@@ -362,25 +427,17 @@
         const p = document.getElementById('price');
         const a = document.getElementById('amount');
         const t = document.getElementById('total');
-
         const valP = parseNum(p.value);
         const valA = parseNum(a.value);
         const valT = parseNum(t.value);
 
         if (currentId === 'price' || currentId === 'amount') {
-            if (valP && valA) {
-                t.value = formatNum(valP * valA, 'total');
-            }
+            if (valP && valA) t.value = formatNum(valP * valA, 'total');
         }
-
         if (currentId === 'total') {
-            if (valT && valP) {
-                a.value = formatNum(valT / valP, 'amount');
-            } else if (valT && valA) {
-                p.value = formatNum(valT / valA, 'price');
-            }
+            if (valT && valP)      a.value = formatNum(valT / valP, 'amount');
+            else if (valT && valA) p.value = formatNum(valT / valA, 'price');
         }
-
         if (currentId === 'amount' && valA && valT && !valP) {
             p.value = formatNum(valT / valA, 'price');
         }
